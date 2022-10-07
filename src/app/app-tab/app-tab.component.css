@@ -1,0 +1,24 @@
+.navColor {
+  background-color: rgb(216, 225, 205);
+  text-align: center;
+}
+.centerA {
+  margin: auto;
+  width: 50%;
+
+  padding: 10px;
+  color: black;
+}
+a:hover {
+  background-color: rgb(168, 243, 212);
+  border-radius: 60px;
+  color: black !important;
+  font-weight: bold;
+}
+.test {
+  /* color: black !important; */
+  font-weight: bold !important;
+}
+.mat-tab-link.mat-focus-indicator {
+  color: black;
+}
