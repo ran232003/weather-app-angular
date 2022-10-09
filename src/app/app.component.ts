@@ -7,14 +7,18 @@ import { WeatherService } from './services/weather.service';
   styleUrls: ['./app.component.css'],
 })
 export class AppComponent implements OnInit {
+  myLocation: Boolean = false;
   constructor(private weatherService: WeatherService) {}
   ngOnInit(): void {
-    navigator.geolocation.getCurrentPosition((pos) => {
-      console.log(pos);
-      this.weatherService.setMyLocation({
-        latitude: pos.coords.latitude,
-        longitude: pos.coords.longitude,
+    if (!this.myLocation) {
+      navigator.geolocation.getCurrentPosition((pos) => {
+        this.myLocation = true;
+        console.log(pos);
+        this.weatherService.setMyLocation({
+          latitude: pos.coords.latitude,
+          longitude: pos.coords.longitude,
+        });
       });
-    });
+    }
   }
 }

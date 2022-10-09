@@ -18,6 +18,9 @@ import { ApiService } from './services/api.service';
 import { WeatherService } from './services/weather.service';
 import { WeatherListComponent } from './weather/weather-list/weather-list.component';
 import { WeatherCardComponent } from './weather/weather-card/weather-card.component';
+import { MatCardModule } from '@angular/material/card';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -37,6 +40,8 @@ import { WeatherCardComponent } from './weather/weather-card/weather-card.compon
     MatFormFieldModule,
     MatInputModule,
     HttpClientModule,
+    MatCardModule,
+    MatProgressSpinnerModule,
   ],
   providers: [ApiService, WeatherService],
   bootstrap: [AppComponent],

@@ -1,1 +1,25 @@
-<p>weather-card works!</p>
+<div *ngIf="!weatherLocation; else elseBlock">
+  <mat-spinner></mat-spinner>
+</div>
+<ng-template #elseBlock
+  >Content to render when condition is false.
+  <div class="cardSize">
+    <mat-card class="example-card">
+      <mat-card-header>
+        <div mat-card-avatar class="example-header-image"></div>
+        <mat-card-title>{{ weatherLocation.city }}</mat-card-title>
+        <mat-card-subtitle>{{ weatherLocation.country }}</mat-card-subtitle>
+      </mat-card-header>
+      <img
+        mat-card-image
+        src="../../../assets/weatherIcons/{{ weatherLocation.WeatherIcon }}.svg"
+        alt="Photo of a Shiba Inu"
+      />
+      <mat-card-content>
+        <p>
+          {{ weatherLocation.temp | number: "1.0-0" }}
+        </p>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</ng-template>
