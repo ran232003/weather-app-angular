@@ -8,6 +8,7 @@ export class WeatherService {
   myLocation = new Subject<{}>();
   myLocationFirst!: {};
   myLocationWeather = new Subject<Weather>();
+  myLocationWeatherData!: Weather;
   myLocationFiveDaysWeather = new Subject<{
     weatherArray: any[];
     title: string;
@@ -17,6 +18,7 @@ export class WeatherService {
     this.myLocation.next(position);
   }
   setMyLocationWeather(locationWeather: any) {
+    this.myLocationWeatherData = locationWeather;
     this.myLocationWeather.next(locationWeather);
   }
   setMyLocationFiveDaysWeather(title: any, locationWeather: any[]) {
