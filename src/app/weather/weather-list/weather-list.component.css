@@ -1,0 +1,19 @@
+.centerTitle {
+  margin: auto;
+  width: 50%;
+
+  padding: 10px;
+  text-align: center;
+  max-width: 50%;
+}
+.weatherList {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 20px;
+  justify-content: space-between;
+}
+.mainList {
+  margin-bottom: 20px;
+}
+.test {
+}

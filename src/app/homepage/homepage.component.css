@@ -11,3 +11,13 @@
 .mainCard {
   margin-left: 20px;
 }
+.flexFavorite {
+  display: flex;
+  justify-content: space-between;
+}
+.matIcon {
+  margin-right: 60px;
+  align-self: center;
+  cursor: pointer;
+  font-size: 30px;
+}

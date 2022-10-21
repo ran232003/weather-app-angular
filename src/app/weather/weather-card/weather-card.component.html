@@ -1,25 +1,38 @@
-<div *ngIf="!weatherLocation; else elseBlock">
+<div *ngIf="!weather; else elseBlock">
   <mat-spinner></mat-spinner>
 </div>
-<ng-template #elseBlock
-  >Content to render when condition is false.
+<ng-template #elseBlock>
   <div class="cardSize">
     <mat-card class="example-card">
-      <mat-card-header>
-        <div mat-card-avatar class="example-header-image"></div>
-        <mat-card-title>{{ weatherLocation.city }}</mat-card-title>
-        <mat-card-subtitle>{{ weatherLocation.country }}</mat-card-subtitle>
-      </mat-card-header>
+      <div *ngIf="!weather.iconText; else elseBlock">
+        <mat-card-header>
+          <mat-card-title>{{ weather.city }}</mat-card-title>
+          <mat-card-subtitle>{{ weather.country }}</mat-card-subtitle>
+        </mat-card-header>
+      </div>
+      <ng-template #elseBlock>
+        <mat-card-header>
+          <mat-card-title>{{ weather.iconText }}</mat-card-title>
+        </mat-card-header>
+      </ng-template>
+
       <img
         mat-card-image
-        src="../../../assets/weatherIcons/{{ weatherLocation.WeatherIcon }}.svg"
-        alt="Photo of a Shiba Inu"
+        src="../../../assets/weatherIcons/{{ weather.WeatherIcon }}.svg"
+        alt="missing weaher icon"
       />
-      <mat-card-content>
-        <p>
-          {{ weatherLocation.temp | number: "1.0-0" }}
-        </p>
-      </mat-card-content>
+      <div *ngIf="weather.temp !== 999; else elseBlock2">
+        <mat-card-content>
+          <h4>{{ weather.temp | number: "1.0-0" }}&#8451;</h4>
+        </mat-card-content>
+      </div>
+      <ng-template #elseBlock2>
+        <mat-card-content class="flexTemp">
+          <h4>{{ weather.minTemp | number: "1.0-0" }}&#8451; &nbsp;</h4>
+          -&nbsp;
+          <h4>{{ weather.maxTemp | number: "1.0-0" }}&#8451;</h4>
+        </mat-card-content>
+      </ng-template>
     </mat-card>
   </div>
 </ng-template>

@@ -20,6 +20,8 @@ import { WeatherListComponent } from './weather/weather-list/weather-list.compon
 import { WeatherCardComponent } from './weather/weather-card/weather-card.component';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatIconModule } from '@angular/material/icon';
+import { FavoriteService } from './services/favorite.service';
 
 @NgModule({
   declarations: [
@@ -42,8 +44,9 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     HttpClientModule,
     MatCardModule,
     MatProgressSpinnerModule,
+    MatIconModule,
   ],
-  providers: [ApiService, WeatherService],
+  providers: [ApiService, WeatherService, FavoriteService],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

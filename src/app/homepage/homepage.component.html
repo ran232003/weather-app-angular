@@ -5,21 +5,40 @@
         <mat-label>Location</mat-label>
 
         <input
-          type="text"
-          placeholder="Pick one"
-          aria-label="Number"
           matInput
+          #txtVal
+          (input)="onSearchChange()"
+          placeholder="Search"
+          name="search"
+          [(ngModel)]="myInput"
           [matAutocomplete]="auto"
         />
-        <mat-autocomplete #auto="matAutocomplete">
-          <mat-option *ngFor="let option of options" [value]="option">
-            {{ option }}
+
+        <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+          <mat-option
+            *ngFor="let option of options"
+            [value]="option"
+            (click)="testing(option)"
+          >
+            {{ option.city }}
           </mat-option>
         </mat-autocomplete>
       </mat-form-field>
     </div>
   </form>
   <div class="mainCard">
-    <app-weather-card></app-weather-card>
+    <div class="flexFavorite">
+      <app-weather-card [weather]="locationWeather"></app-weather-card>
+      <mat-icon
+        (click)="addToFavorite()"
+        class="matIcon"
+        [style.color]="iconColor"
+        >thumb_up</mat-icon
+      >
+    </div>
+    <app-weather-list
+      [title]="title"
+      [weatherArray]="weatherArray"
+    ></app-weather-list>
   </div>
 </div>

@@ -1,1 +1,16 @@
-<p>weather-list works!</p>
+<div class="mainList">
+  <div class="centerTitle">
+    <h2 *ngIf="checkLength; else elseBlock">
+      {{ this.title.substring(0, 50) }}...
+    </h2>
+
+    <ng-template #elseBlock
+      ><h2>{{ this.title }}</h2></ng-template
+    >
+  </div>
+  <div class="weatherList">
+    <div class="test" *ngFor="let weather of weatherArray; index as i">
+      <app-weather-card [weather]="weather"> </app-weather-card>
+    </div>
+  </div>
+</div>
