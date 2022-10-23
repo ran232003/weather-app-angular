@@ -10,8 +10,10 @@ export class AppComponent implements OnInit {
   myLocation: Boolean = false;
   constructor(private weatherService: WeatherService) {}
   ngOnInit(): void {
-    console.log(this.myLocation);
-    if (!this.myLocation) {
+    if (
+      !this.weatherService.myLocationFirst &&
+      !this.weatherService.myLocationWeatherData
+    ) {
       console.log('inside if');
       try {
         navigator.geolocation.getCurrentPosition((pos) => {

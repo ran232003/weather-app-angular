@@ -4,6 +4,7 @@ import { Weather } from '../models/WeatherModel';
 import { ApiService } from '../services/api.service';
 import { FavoriteService } from '../services/favorite.service';
 import { WeatherService } from '../services/weather.service';
+import { makeFiveDaysObject } from './helperFunc';
 
 @Component({
   selector: 'app-homepage',
@@ -55,6 +56,7 @@ export class HomepageComponent implements OnInit {
     this.apiService
       .getMyLocationByKey(option.key)
       .subscribe((response: any) => {
+        this.iconColor = 'black';
         console.log(response);
         this.locationWeather = new Weather(
           option.key,
@@ -107,116 +109,201 @@ export class HomepageComponent implements OnInit {
       this.options = res;
     });
   }
+  helperElseFunc() {
+    this.apiService
+      .getMyLocation(this.myLocation)
+      .subscribe((locationObject: any) => {
+        this.key = locationObject['Key'];
+        this.apiService
+          .getMyLocationByKey(locationObject['Key'])
+          .subscribe((cityWeather: any) => {
+            this.locationWeather = new Weather(
+              locationObject['Key'],
+              locationObject['LocalizedName'],
+              locationObject.Country.LocalizedName,
+              '0',
+              '0',
+              cityWeather[0].Temperature.Metric.Value,
+              cityWeather[0].WeatherIcon
+            );
+            this.weatherService.setMyLocationWeather(this.locationWeather);
+            this.apiService
+              .getMyLocationWeatherFiveDays(this.key)
+              .subscribe((fiveDaysWeather: any) => {
+                console.log(fiveDaysWeather, 'fiveDaysWeather');
+                let title = fiveDaysWeather.Headline.Text;
+                let tempArray: any = [];
+                fiveDaysWeather.DailyForecasts.forEach((element: any) => {
+                  let weather = new Weather(
+                    this.key,
+                    locationObject['LocalizedName'],
+                    locationObject.Country.LocalizedName,
+                    element.Temperature.Minimum.Value,
+                    element.Temperature.Maximum.Value,
+                    999,
+                    element.Day.Icon
+                  );
+                  weather.setIconText(element.Day.IconPhrase);
+                  tempArray.push(weather);
+                });
+                this.title = title;
+                this.weatherArray = tempArray;
+                this.weatherService.setMyLocationFiveDaysWeather(
+                  title,
+                  tempArray
+                );
+              });
+          });
+      });
+  }
+  cityObject!: any;
   options: any = [];
   ngOnInit(): void {
-    this.myLocation = this.weatherService.myLocationFirst;
-    console.log(this.myLocation);
-    this.weatherService.myLocation.subscribe((location) => {
-      console.log(location);
-      this.myLocation = location;
-      this.apiService
-        .getMyLocation(this.myLocation)
-        .subscribe((resposne: any) => {
-          //  console.log(resposne);
-          this.key = resposne['Key'];
-          let country = resposne.Country.LocalizedName;
-          let city = resposne.LocalizedName;
-          this.apiService
-            .getMyLocationByKey(this.key)
-            .subscribe((response: any) => {
-              console.log(response);
-              this.locationWeather = new Weather(
-                this.key,
-                city,
-                country,
-                '0',
-                '0',
-                response[0].Temperature.Metric.Value,
-                response[0].WeatherIcon
-              );
-              console.log(this.locationWeather);
-              this.weatherService.setMyLocationWeather(this.locationWeather);
-              this.apiService
-                .getMyLocationWeatherFiveDays(this.key)
-                .subscribe((fiveDaysWeather: any) => {
-                  console.log(fiveDaysWeather, 'fiveDaysWeather');
-                  let title = fiveDaysWeather.Headline.Text;
-                  let tempArray: any = [];
-                  fiveDaysWeather.DailyForecasts.forEach((element: any) => {
-                    let weather = new Weather(
-                      this.key,
-                      city,
-                      country,
-                      element.Temperature.Minimum.Value,
-                      element.Temperature.Maximum.Value,
-                      999,
-                      element.Day.Icon
-                    );
-                    weather.setIconText(element.Day.IconPhrase);
-                    tempArray.push(weather);
-                  });
-                  this.title = title;
-                  this.weatherArray = tempArray;
-                  this.weatherService.setMyLocationFiveDaysWeather(
-                    title,
-                    tempArray
-                  );
-                });
-            });
-        });
+    this.locationWeather = this.weatherService.myLocationWeatherData;
+    this.weatherService.myLocationWeather.subscribe((weather) => {
+      this.locationWeather = weather;
+      console.log('myLocationWeatherData subscibre');
     });
-
-    if (this.myLocation) {
+    console.log(this.locationWeather, 'locationWeather no subscribe');
+    if (this.locationWeather) {
+      this.iconColor = 'green';
+      // meanining, there is allready a weather for a city, so just need five day forcast
       this.apiService
-        .getMyLocation(this.myLocation)
-        .subscribe((resposne: any) => {
-          //  console.log(resposne);
-          this.key = resposne['Key'];
-          let country = resposne.Country.LocalizedName;
-          let city = resposne.LocalizedName;
-          this.apiService
-            .getMyLocationByKey(this.key)
-            .subscribe((response: any) => {
-              console.log(response);
-              this.locationWeather = new Weather(
-                this.key,
-                city,
-                country,
-                '0',
-                '0',
-                response[0].Temperature.Metric.Value,
-                response[0].WeatherIcon
-              );
-              console.log(this.locationWeather);
-              this.weatherService.setMyLocationWeather(this.locationWeather);
-              this.apiService
-                .getMyLocationWeatherFiveDays(this.key)
-                .subscribe((fiveDaysWeather: any) => {
-                  console.log(fiveDaysWeather, 'fiveDaysWeather');
-                  let title = fiveDaysWeather.Headline.Text;
-                  let tempArray: any = [];
-                  fiveDaysWeather.DailyForecasts.forEach((element: any) => {
-                    let weather = new Weather(
-                      this.key,
-                      city,
-                      country,
-                      element.Temperature.Minimum.Value,
-                      element.Temperature.Maximum.Value,
-                      999,
-                      element.Day.Icon
-                    );
-                    weather.setIconText(element.Day.IconPhrase);
-                    tempArray.push(weather);
-                  });
-                  this.title = title;
-                  this.weatherArray = tempArray;
-                  this.weatherService.setMyLocationFiveDaysWeather(
-                    title,
-                    tempArray
-                  );
-                });
-            });
+        .getMyLocationWeatherFiveDays(this.locationWeather.key)
+        .subscribe((fiveDaysWeather: any) => {
+          let weatherObject = makeFiveDaysObject(
+            fiveDaysWeather,
+            this.locationWeather
+          );
+          this.title = weatherObject.title;
+          this.weatherArray = weatherObject.tempArray;
         });
+    } else {
+      console.log(
+        this.weatherService.myLocationFirst,
+        'this.weatherService.myLocationFirst'
+      );
+      this.iconColor = 'black';
+      this.myLocation = this.weatherService.myLocationFirst;
+      this.weatherService.myLocation.subscribe((location) => {
+        console.log(this.myLocation, 'this.myLocation inside sub');
+
+        this.myLocation = location;
+        console.log(this.myLocation, 'this.myLocation inside sub');
+        this.helperElseFunc();
+      });
+      console.log(this.myLocation, 'this.myLocation');
+      this.helperElseFunc();
     }
+    /////
+    // this.myLocation = this.weatherService.myLocationFirst;
+
+    // this.weatherService.myLocation.subscribe((location) => {
+    //   console.log(location);
+    //   this.myLocation = location;
+    //   this.apiService
+    //     .getMyLocation(this.myLocation)
+    //     .subscribe((resposne: any) => {
+    //       //  console.log(resposne);
+    //       this.key = resposne['Key'];
+    //       let country = resposne.Country.LocalizedName;
+    //       let city = resposne.LocalizedName;
+    //       this.apiService
+    //         .getMyLocationByKey(this.key)
+    //         .subscribe((response: any) => {
+    //           console.log(response);
+    //           this.locationWeather = new Weather(
+    //             this.key,
+    //             city,
+    //             country,
+    //             '0',
+    //             '0',
+    //             response[0].Temperature.Metric.Value,
+    //             response[0].WeatherIcon
+    //           );
+    //           console.log(this.locationWeather);
+    //           this.weatherService.setMyLocationWeather(this.locationWeather);
+    //           this.apiService
+    //             .getMyLocationWeatherFiveDays(this.key)
+    //             .subscribe((fiveDaysWeather: any) => {
+    //               console.log(fiveDaysWeather, 'fiveDaysWeather');
+    //               let title = fiveDaysWeather.Headline.Text;
+    //               let tempArray: any = [];
+    //               fiveDaysWeather.DailyForecasts.forEach((element: any) => {
+    //                 let weather = new Weather(
+    //                   this.key,
+    //                   city,
+    //                   country,
+    //                   element.Temperature.Minimum.Value,
+    //                   element.Temperature.Maximum.Value,
+    //                   999,
+    //                   element.Day.Icon
+    //                 );
+    //                 weather.setIconText(element.Day.IconPhrase);
+    //                 tempArray.push(weather);
+    //               });
+    //               this.title = title;
+    //               this.weatherArray = tempArray;
+    //               this.weatherService.setMyLocationFiveDaysWeather(
+    //                 title,
+    //                 tempArray
+    //               );
+    //             });
+    //         });
+    //     });
+    // });
+
+    // if (this.myLocation) {
+    //   this.apiService
+    //     .getMyLocation(this.myLocation)
+    //     .subscribe((resposne: any) => {
+    //       //  console.log(resposne);
+    //       this.key = resposne['Key'];
+    //       let country = resposne.Country.LocalizedName;
+    //       let city = resposne.LocalizedName;
+    //       this.apiService
+    //         .getMyLocationByKey(this.key)
+    //         .subscribe((response: any) => {
+    //           console.log(response);
+    //           this.locationWeather = new Weather(
+    //             this.key,
+    //             city,
+    //             country,
+    //             '0',
+    //             '0',
+    //             response[0].Temperature.Metric.Value,
+    //             response[0].WeatherIcon
+    //           );
+    //           console.log(this.locationWeather);
+    //           this.weatherService.setMyLocationWeather(this.locationWeather);
+    //           this.apiService
+    //             .getMyLocationWeatherFiveDays(this.key)
+    //             .subscribe((fiveDaysWeather: any) => {
+    //               console.log(fiveDaysWeather, 'fiveDaysWeather');
+    //               let title = fiveDaysWeather.Headline.Text;
+    //               let tempArray: any = [];
+    //               fiveDaysWeather.DailyForecasts.forEach((element: any) => {
+    //                 let weather = new Weather(
+    //                   this.key,
+    //                   city,
+    //                   country,
+    //                   element.Temperature.Minimum.Value,
+    //                   element.Temperature.Maximum.Value,
+    //                   999,
+    //                   element.Day.Icon
+    //                 );
+    //                 weather.setIconText(element.Day.IconPhrase);
+    //                 tempArray.push(weather);
+    //               });
+    //               this.title = title;
+    //               this.weatherArray = tempArray;
+    //               this.weatherService.setMyLocationFiveDaysWeather(
+    //                 title,
+    //                 tempArray
+    //               );
+    //             });
+    //         });
+    //     });
+    // }
   }
 }

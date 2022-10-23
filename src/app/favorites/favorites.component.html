@@ -1,6 +1,9 @@
 <p>favorites works!</p>
 <div class="FavoriteMain">
-  <div *ngFor="let weather of favoritesArray; index as i">
+  <div
+    *ngFor="let weather of favoritesArray; index as i"
+    (click)="goToMain(weather)"
+  >
     <app-weather-card [weather]="weather"></app-weather-card>
   </div>
 </div>

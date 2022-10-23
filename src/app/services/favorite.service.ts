@@ -14,10 +14,12 @@ export class FavoriteService {
     });
     console.log(check, 'check');
     if (!check) {
+      weather.favorite = true;
       this.favoriteArray.push(weather);
       this.favoritesArraySubject.next(this.favoriteArray);
       return true;
     } else {
+      weather.favorite = false;
       this.removeFavorite(weather);
       return false;
     }

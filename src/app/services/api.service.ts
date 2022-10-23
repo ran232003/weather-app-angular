@@ -49,4 +49,22 @@ export class ApiService {
         })
       );
   }
+  getMyLocationByKey2(key: any) {
+    return this.http
+      .get(
+        `http://dataservice.accuweather.com/currentconditions/v1/${key}?apikey=${this.apiKey}`
+      )
+      .subscribe((response) => {
+        return response;
+      });
+  }
+  getMyLocation2(location: any) {
+    return this.http
+      .get(
+        `http://dataservice.accuweather.com/locations/v1/cities/geoposition/search?apikey=${this.apiKey}&q=${location.latitude},${location.longitude}`
+      )
+      .subscribe((response) => {
+        return response;
+      });
+  }
 }
